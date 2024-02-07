@@ -6,7 +6,7 @@ const RssParser = require('rss-parser');
 const { terms1 } = require('./terms');
 
 
- function asyncFunction(item, cb) {
+ function searchItems(item) {
   const fileName = item.split(' ')[0];
 
   // A URL is taken
@@ -64,8 +64,8 @@ const { terms1 } = require('./terms');
 }
 
 terms1.map((item) => {
-    asyncFunction(item, resolve);
-  });
+    searchItems(item);
+});
 
   /*
 
