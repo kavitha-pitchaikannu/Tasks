@@ -1,57 +1,84 @@
 const axios = require('axios');
+const https = require('https');
+
 const querystring = require('querystring');
 const RssParser = require('rss-parser');
-const  {terms} = require('./terms');
+const { terms1 } = require('./terms');
 
-console.log(terms[0]);
 
-// A URL is taken
-let baseUrl = "https://news.google.com/rss/search?";
+ function asyncFunction(item, cb) {
+  const fileName = item.split(' ')[0];
 
- let queryObj = {
-    q: terms[0],
-  hl: 'en-IN',
-  gl: 'IN',
-  ceid: 'IN:en'
- }
- let parsedQuery = querystring.stringify(queryObj); 
+  // A URL is taken
+  let baseUrl = "https://news.google.com/rss/search?";
 
- let serachUrl = baseUrl.concat(parsedQuery);
+  let queryObj = {
+    q: item,
+    hl: 'en-IN',
+    gl: 'IN',
+    ceid: 'IN:en'
+  }
+  let parsedQuery = querystring.stringify(queryObj);
 
- console.log(serachUrl)
-  
- const parser = new RssParser();
+  let serachUrl = baseUrl.concat(parsedQuery);
 
-// Fetch and parse the RSS feed
-parser.parseURL(serachUrl)
+  console.log(serachUrl)
 
-  .then(feed => {
-    let searchResults = [];
+  const parser = new RssParser();
+  parser.parseURL(serachUrl)
 
-    let searchKey = feed.title;
-    let items = []
-    feed.items.forEach(item => {
+    .then(feed => {
+      let searchResults = [];
+
+      let searchKey = feed.title;
+      let items = []
+      feed.items.forEach(item => {
         let aItem = {
-            title : item.title,
-            link: item.link,
-            publishedDate: item.pubDate,
+          title: item.title,
+          link: item.link,
+          publishedDate: item.pubDate,
         }
         items.push(aItem)
-    })
-    const jsonContent = JSON.stringify(items);
-    searchResults.push({
-      key: searchKey,
-      item: items
-    })
+      })
+      const jsonContent = JSON.stringify(items);
+      searchResults.push({
+        key: searchKey,
+        item: items
+      })
 
-    var json = JSON.stringify(searchResults);
-    var fs = require('fs');
-    fs.writeFile('./test_data.json', json, 'utf8', (callback => {
-    console.log("complete")
-    }));
+      var json = JSON.stringify(searchResults);
+      var fs = require('fs');
+      fs.writeFile(`./jsonFiles/${fileName}.json`, json, 'utf8', (callback => {
+        console.log("complete")
+      }));
+
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    })
+    .finally(function () {
+      // always executed
+    });
+
+}
+
+terms1.map((item) => {
+    asyncFunction(item, resolve);
   });
 
- 
+  /*
+
+let requests = terms1.map((item) => {
+  return new Promise((resolve) => {
+    asyncFunction(item, resolve);
+  });
+})
+
+Promise.all(requests).then(() => console.log('done'));
+*/
 
 
-  
+
+
+
