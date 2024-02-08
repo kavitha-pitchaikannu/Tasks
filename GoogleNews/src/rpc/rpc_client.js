@@ -2,7 +2,7 @@ const amqp = require('amqplib');
 const {v4}  = require("uuid");
 const { terms } = require('../terms');
 
-const getFibonacci = async() => {
+const searchItems = async() => {
     const connection = await amqp.connect('amqp://localhost');
     const channel = await connection.createChannel();
 
@@ -32,4 +32,4 @@ const getFibonacci = async() => {
    
 }
 
-getFibonacci();
+searchItems();
