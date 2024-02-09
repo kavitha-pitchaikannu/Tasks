@@ -1,7 +1,11 @@
-exports.terms = [
+exports.terms1= [
   "Respules",
+  "483 observation letter"
+]
 
-  "483 observation letter",
+exports.terms = [
+"483 observation letter",
+  "Respules",
   "Albuterol",
   "FDA warning",
   "Sandoz",
