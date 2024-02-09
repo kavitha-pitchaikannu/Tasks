@@ -1,18 +1,31 @@
 const amqp = require('amqplib');
 const querystring = require('querystring');
 const axios = require('axios');
-
 const parseString = require('xml2js').parseString;
-const qName = "rpc_queue";
 
+const qName = "terms_queue";
 
-async function searchItems(item) {
-  const fileName = item.toString().split(' ')[0];
+const processTask = async () => {
+
+  const connection = await amqp.connect("amqp://localhost");
+  const channel = await connection.createChannel();
+
+  await channel.assertQueue(qName, { durable: false });
+
+  // Maintain queue by one after another defines number of consumers
+  channel.prefetch(1);
+
+  console.log("Processing rpc request...");
+
+  channel.consume(qName, async(msg) => {
+    const term = msg.content.toString();
+    console.log("Requested search  of : ", term);
+
   // A URL is taken
   let baseUrl = "https://news.google.com/rss/search?";
 
   let queryObj = {
-    q: item,
+    q: term,
     hl: 'en-IN',
     gl: 'IN',
     ceid: 'IN:en'
@@ -21,16 +34,13 @@ async function searchItems(item) {
   let serachUrl = baseUrl.concat(parsedQuery);
 
   const response = await axios.get(serachUrl);
-  console.log(response.data)
-
   const resData = response.data;
+  let searchResults = [];
 
   parseString(resData, (err, feed) => {
-    let searchResults = [];
 
     const result = feed.rss.channel[0];
 
-    console.log(result)
     let searchKey = result.title;
     let items = []
     let totalItems = result.item || [];
@@ -48,43 +58,18 @@ async function searchItems(item) {
       item: items
     })
 
-    var json = JSON.stringify(searchResults);
-    var fs = require('fs');
-    fs.writeFile(`../jsonFiles/${fileName}.json`, json, 'utf8', (callback => {
-      console.log("complete")
-    }));
-
-  })
-}
-
-function searchItems1(item) {
-  console.log(item)
-}
-
-const processTask = async () => {
-
-  const connection = await amqp.connect("amqp://localhost");
-  const channel = await connection.createChannel();
-  await channel.assertQueue(qName, { durable: false });
-
-  channel.prefetch();
-  console.log("Processing rpc request...");
-
-  channel.consume(qName, (msg) => {
-    console.log(msg.content)
-    const term = msg.content.toString();
-    console.log("Requested search  of : ", term);
-
-    const result = searchItems(term);
-
-    channel.sendToQueue(msg.properties.replyTo, Buffer.from(term.toString()), {
+    console.log(items.length)
+    var json = JSON.stringify(items);
+    channel.sendToQueue(msg.properties.replyTo, Buffer.from(json), {
       correlationId: msg.properties.correlationId
     })
 
-    channel.ack(msg);
+    setTimeout(() => {
+      channel.ack(msg);
+    }, 1000);
 
-    // manual acknowledgement - false
-  }, { noAck: false })
+  })
+})
 
 }
 
