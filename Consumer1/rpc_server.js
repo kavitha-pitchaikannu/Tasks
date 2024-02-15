@@ -1,11 +1,10 @@
 const amqp = require('amqplib');
 const querystring = require('querystring');
 const axios = require('axios');
-const parseString = require('xml2js').parseString;
 const { xml2json } = require('xml-js');
 const http = require('node:http');
 const hostname = '127.0.0.1';
-const port = 3001;
+const port = 3002;
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
@@ -81,6 +80,7 @@ const processTask = async () => {
           })
     
           setTimeout(() => {
+            console.log("Fetched search results and converted to JSON!!!")
             channel.ack(msg);
           }, 1000);
       
