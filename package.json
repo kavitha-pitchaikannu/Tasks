@@ -1,0 +1,26 @@
+{
+  "name": "googlenews",
+  "version": "1.0.0",
+  "description": "Converting to json",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kavi",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "axios": "^1.6.7",
+    "comment-json": "^4.2.3",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
+    "path": "^0.12.7",
+    "querystring": "^0.2.1",
+    "rss-parser": "^3.13.0",
+    "rss-to-json": "^2.1.1",
+    "url": "^0.11.3",
+    "uuid": "^9.0.1",
+    "xml-js": "^1.6.11",
+    "xml2js": "^0.6.2"
+  }
+}

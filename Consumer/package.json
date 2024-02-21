@@ -1,0 +1,15 @@
+{
+  "name": "consumer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "rpc_server.js",
+  "scripts": {
+    "con1": "set NODE_ENV=consumer1&& node rpc_server.js",
+    "con2": "set NODE_ENV=consumer2&& node rpc_server.js"
+  },
+  "author": "kavi",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.4"
+  }
+}
