@@ -1,6 +1,7 @@
 exports.terms = [
-  "drug shortage NOT America",
-  "biosimilar AND prescription",
+  "housing INCLUDES (justice || rights || equity || access || shortage || crisis || affordability || low income)",
+  "public school INCLUDES (funding && Michigan)",
+  "drug shortage NOT respiratory"
 ]
 
 exports.terms1 =  [

@@ -1,6 +1,6 @@
 const amqp = require('amqplib');
 const { v4 } = require("uuid");
-const { terms } = require('../terms');
+const { terms } = require('../terms2');
 var fs = require('fs');
 const http = require('node:http');
 const hostname = '127.0.0.1';
@@ -18,7 +18,7 @@ server.listen(port, hostname, () => {
 
 const searchItems = async () => {
 
-    var queueName = "terms_queue4";
+    var queueName = "terms_queue5";
     var connection;
     amqp.connect('amqp://localhost')
         .then(conn => {
@@ -89,9 +89,10 @@ const searchItems = async () => {
         .catch((error) => {
             console.error(error);
             console.log(`[AMQP][${queueName}] reconnecting in 1s`);
-            return this._delay(1000).then(() =>
+            return this.delay(1000).then(() =>
                 searchItems()
             );
+            
         })
 
 }
